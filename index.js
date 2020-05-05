@@ -116,11 +116,27 @@ server.patch('/api/users/:id', (req, res) => {
     // updated name
     const updatedName = req.body.name
     // find user from array
-    const user = userNames.filter(name => name.id === id);
+    const user = userNames.find(name => name.id === id);
+
+    if(user) {
+        Object.assign(user, update)
+
+        res.status(201).json( user )
+    } else if (!user) {
+        const errorMessage = {
+            message: "Sorry the user with that ID does not exist"
+        }
+        res.status(404).json(errorMessage)
+    } else {
+        const errorMessage = {
+            message: "The user information could not be modified"
+        }
+        res.status(500).json(errorMessage)
+    }
 
 
 
-    res.status(201).json( user )
+    
 });
 
 server.listen(8000, () => console.log('\n== API is up ==\n'));
